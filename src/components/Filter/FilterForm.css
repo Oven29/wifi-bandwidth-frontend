@@ -1,0 +1,106 @@
+.filter-card {
+  background-color: var(--card-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.search-input-group {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.search-input-group .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.custom-form-control {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-main) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px 10px 36px !important;
+  font-size: 14px !important;
+}
+
+.custom-form-control:focus {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 243, 187, 0.25) !important;
+}
+
+.custom-form-select {
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-main) !important;
+  border-radius: 10px !important;
+  font-size: 13px !important;
+  padding: 10px 12px !important;
+}
+
+.custom-form-select:focus {
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 243, 187, 0.25) !important;
+}
+
+.filter-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-badge-val {
+  color: var(--accent-cyan);
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.slider-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.btn-filter-apply {
+  background-color: transparent !important;
+  border: 2px solid var(--accent-cyan) !important;
+  color: var(--text-main) !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 10px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-filter-apply:hover {
+  background-color: var(--accent-cyan) !important;
+  color: var(--bg-primary) !important;
+}
+
+.btn-filter-reset {
+  background-color: transparent !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+  padding: 10px !important;
+  font-size: 14px !important;
+}
+
+.btn-filter-reset:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-main) !important;
+}
