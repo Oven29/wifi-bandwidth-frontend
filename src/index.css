@@ -1,0 +1,69 @@
+/* Speedtest / Network Activity dark cyan cyberpunk theme */
+:root {
+  --bg-primary: #141526;
+  --card-surface: #1E2238;
+  --accent-cyan: #00F3BB;
+  --accent-hover: #00C295;
+  --text-main: #FFFFFF;
+  --text-muted: #8F9BB3;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0b0c16;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* App shell: 390px fixed mobile container centered on desktop screens */
+.app-shell {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 243, 187, 0.08);
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 74px; /* Space for fixed bottom navbar */
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--card-surface) transparent;
+}
+
+.app-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-content::-webkit-scrollbar-thumb {
+  background-color: var(--card-surface);
+  border-radius: 4px;
+}
+
+/* Common text helpers */
+.accent-cyan {
+  color: var(--accent-cyan);
+}
+
+.text-muted-custom {
+  color: var(--text-muted);
+}
