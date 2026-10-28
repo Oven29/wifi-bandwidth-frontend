@@ -1,0 +1,59 @@
+.catalog-page {
+  padding: 16px;
+  min-height: 100%;
+}
+
+.catalog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.catalog-header-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalog-counter-badge {
+  font-size: 11px;
+  background-color: var(--card-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-cyan);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.catalog-empty-state {
+  text-align: center;
+  padding: 36px 16px;
+  background-color: var(--card-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  margin-top: 16px;
+}
+
+.catalog-empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.catalog-empty-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
