@@ -1,32 +1,49 @@
-import React, { useState, useMemo } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { AppOutletContext } from '../layouts/AppLayout';
-import { ActivityFilterParams } from '../types/activity';
-import { filterActivities } from '../modules/activitiesApi';
-import { FilterForm } from '../components/Filter/FilterForm';
-import { ActivityCard } from '../components/CatalogCard/ActivityCard';
-import { ROUTES } from '../Routes';
-import './CatalogPage.css';
+import { NetworkActivity, ActivityFilterParams } from '../entities/activity/model/types';
+import { MOCK_ACTIVITIES } from '../entities/activity/model/mock';
+import { ActivityCard } from '../entities/activity/ui/ActivityCard';
+import { ActivityFilter } from '../features/activity-filter/ui/ActivityFilter';
+import { ROUTES } from '../app/routes';
+import '../styles/pages/CatalogPage.css';
 
 const DEFAULT_FILTERS: ActivityFilterParams = {
   search: '',
   maxTraffic: 150,
-  sortBy: 'default',
 };
 
 export const CatalogPage: React.FC = () => {
-  const { activities } = useOutletContext<AppOutletContext>();
   const navigate = useNavigate();
 
-  const [filters, setFilters] = useState<ActivityFilterParams>(DEFAULT_FILTERS);
+  // Локальное состояние для Лабораторной 5 (без Context и Redux)
+  const [activities, setActivities] = useState<NetworkActivity[]>(MOCK_ACTIVITIES);
+  const [activeFilters, setActiveFilters] = useState<ActivityFilterParams>(DEFAULT_FILTERS);
 
-  const filteredActivities = useMemo(() => {
-    return filterActivities(activities, filters);
-  }, [activities, filters]);
+  // Фильтрация mock-коллекции по сабмиту формы (Скриншоты 5-6, Лекция 9 слайд 6)
+  const handleApplyFilters = (newFilters: ActivityFilterParams) => {
+    setActiveFilters(newFilters);
 
-  const handleReset = () => {
-    setFilters(DEFAULT_FILTERS);
+    const query = newFilters.search.trim().toLowerCase();
+    const filtered = MOCK_ACTIVITIES.filter((item) => {
+      const matchSearch =
+        !query ||
+        item.activity_title.toLowerCase().includes(query) ||
+        item.activity_description.toLowerCase().includes(query);
+
+      const matchTraffic =
+        newFilters.maxTraffic === 0 || item.average_traffic_mbps <= newFilters.maxTraffic;
+
+      return matchSearch && matchTraffic;
+    });
+
+    setActivities(filtered);
+  };
+
+  const handleResetFilters = () => {
+    setActiveFilters(DEFAULT_FILTERS);
+    // При сбросе возвращаем полный набор mock-данных
+    setActivities(MOCK_ACTIVITIES);
   };
 
   const handleCardClick = (id: number) => {
@@ -35,26 +52,27 @@ export const CatalogPage: React.FC = () => {
 
   return (
     <div className="catalog-page">
+      {/* Заголовок страницы с бейджем количества */}
       <div className="catalog-header">
         <h1 className="catalog-header-title">
           <span>Каталог активностей</span>
         </h1>
         <span className="catalog-counter-badge">
-          {filteredActivities.length} из {activities.length}
+          Показано: {activities.length} из {MOCK_ACTIVITIES.length}
         </span>
       </div>
 
-      {/* Filter Form using React-Bootstrap */}
-      <FilterForm
-        filters={filters}
-        onChange={setFilters}
-        onReset={handleReset}
+      {/* Компонент фильтрации: props initialFilters, onApply, onReset */}
+      <ActivityFilter
+        initialFilters={activeFilters}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
       />
 
-      {/* Grid of Cards */}
-      {filteredActivities.length > 0 ? (
+      {/* Плитка (сетка) карточек */}
+      {activities.length > 0 ? (
         <div className="catalog-grid">
-          {filteredActivities.map((activity) => (
+          {activities.map((activity) => (
             <ActivityCard
               key={activity.id}
               activity={activity}
@@ -66,9 +84,9 @@ export const CatalogPage: React.FC = () => {
         <div className="catalog-empty-state">
           <div className="catalog-empty-title">Ничего не найдено</div>
           <div className="catalog-empty-desc">
-            Попробуйте изменить параметры поиска или сбросить фильтр по объему трафика.
+            Активностей с заданными параметрами не найдено. Нажмите «Сбросить» для возврата полного списка.
           </div>
-          <Button variant="outline-light" size="sm" onClick={handleReset}>
+          <Button variant="outline-light" size="sm" onClick={handleResetFilters}>
             Сбросить фильтры
           </Button>
         </div>
