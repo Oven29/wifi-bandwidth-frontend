@@ -3,7 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { FeedPage } from '../pages/FeedPage';
 import { CatalogPage } from '../pages/CatalogPage';
 import { DetailPage } from '../pages/DetailPage';
+import { AddPage } from '../pages/AddPage';
+import { AuthPage } from '../pages/AuthPage';
 import { BottomNavbar } from '../widgets/bottom-navbar/BottomNavbar';
+import { LoadingOverlay } from '../shared/ui/LoadingOverlay/LoadingOverlay';
 import { ROUTES } from './routes';
 
 export const App: React.FC = () => {
@@ -15,11 +18,17 @@ export const App: React.FC = () => {
             <Route path={ROUTES.HOME} element={<FeedPage />} />
             <Route path={ROUTES.FEED} element={<FeedPage />} />
             <Route path={ROUTES.CATALOG} element={<CatalogPage />} />
+            <Route path={ROUTES.ADD} element={<AddPage />} />
+            <Route path={ROUTES.LOGIN} element={<AuthPage />} />
             <Route path={`${ROUTES.DETAIL}/:id`} element={<DetailPage />} />
             <Route path="*" element={<Navigate to={ROUTES.FEED} replace />} />
           </Routes>
         </main>
-        {/* Нижняя навигационная панель (4 пункта, 2 доступны для гостя) */}
+
+        {/* Анимация блокировки при AJAX-запросах к сервису */}
+        <LoadingOverlay />
+
+        {/* Нижняя навигационная панель */}
         <BottomNavbar />
       </div>
     </BrowserRouter>

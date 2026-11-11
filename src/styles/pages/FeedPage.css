@@ -118,6 +118,24 @@
   border-color: var(--accent);
 }
 
+.feed-delete-btn {
+  background: rgba(255, 75, 114, 0.2) !important;
+  border-color: var(--danger) !important;
+  color: #fff !important;
+  font-size: 16px;
+}
+
+.feed-owner-badge {
+  background: rgba(0, 243, 187, 0.2);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
 .feed-action-btn.liked {
   border-color: var(--danger);
 }

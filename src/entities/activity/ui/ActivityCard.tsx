@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { Card } from 'react-bootstrap';
-import { NetworkActivity } from '../model/types';
+import { Card, Button } from 'react-bootstrap';
+import { NetworkActivityResponse } from '../../../shared/api/generated/Api';
 import { DEFAULT_IMAGE } from '../model/mock';
 import '../../../styles/entities/ActivityCard.css';
 
 interface ActivityCardProps {
-  activity: NetworkActivity;
+  activity: NetworkActivityResponse;
   onClick: () => void;
+  onDelete?: () => void;
 }
 
-export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick }) => {
-  // Реализация fallback на изображение по умолчанию (Скриншоты 3-4)
+export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick, onDelete }) => {
+  // Реализация fallback на изображение по умолчанию
   const [imgSrc, setImgSrc] = useState<string>(
     activity.preview_image_url || DEFAULT_IMAGE
   );
@@ -31,19 +32,40 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick })
           onError={handleError}
           className="activity-card-img"
         />
+        {activity.is_owner === 1 && (
+          <span className="owner-badge" title="Создано текущим пользователем">
+            Ваше
+          </span>
+        )}
       </div>
       <Card.Body className="activity-card-body">
         <div>
           <div className="activity-card-meta">
             <span>⏱ {activity.max_latency_ms} мс</span>
-            <span>♡ {activity.likes_count}</span>
+            <span>♡ {activity.likes_count || 0}</span>
           </div>
           <Card.Title as="h3" className="activity-card-title">
             {activity.activity_title}
           </Card.Title>
         </div>
-        <div className="activity-card-speed">
-          ⚡ {activity.average_traffic_mbps} Мбит/с
+        <div className="activity-card-footer-row">
+          <div className="activity-card-speed">
+            ⚡ {activity.average_traffic_mbps} Мбит/с
+          </div>
+          {activity.is_owner === 1 && onDelete && (
+            <Button
+              variant="outline-danger"
+              size="sm"
+              className="btn-card-delete"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              title="Удалить активность"
+            >
+              Удалить
+            </Button>
+          )}
         </div>
       </Card.Body>
     </Card>

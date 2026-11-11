@@ -1,54 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
-import { NetworkActivity, ActivityFilterParams } from '../entities/activity/model/types';
-import { MOCK_ACTIVITIES } from '../entities/activity/model/mock';
+import { useAppDispatch, useAppSelector } from '../app/store/hooks';
+import {
+  fetchActivitiesThunk,
+  deleteActivityThunk,
+} from '../entities/activity/model/activitySlice';
+import { resetFilters } from '../features/activity-filter/model/filterSlice';
 import { ActivityCard } from '../entities/activity/ui/ActivityCard';
 import { ActivityFilter } from '../features/activity-filter/ui/ActivityFilter';
 import { ROUTES } from '../app/routes';
 import '../styles/pages/CatalogPage.css';
 
-const DEFAULT_FILTERS: ActivityFilterParams = {
-  search: '',
-  maxTraffic: 150,
-};
-
 export const CatalogPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  // Локальное состояние для Лабораторной 5 (без Context и Redux)
-  const [activities, setActivities] = useState<NetworkActivity[]>(MOCK_ACTIVITIES);
-  const [activeFilters, setActiveFilters] = useState<ActivityFilterParams>(DEFAULT_FILTERS);
+  // Состояние Redux Toolkit (Скриншоты 11-12)
+  const { activities } = useAppSelector((state) => state.activity);
+  const { search, maxTraffic } = useAppSelector((state) => state.filter);
 
-  // Фильтрация mock-коллекции по сабмиту формы (Скриншоты 5-6, Лекция 9 слайд 6)
-  const handleApplyFilters = (newFilters: ActivityFilterParams) => {
-    setActiveFilters(newFilters);
+  // Запрос в веб-сервис при монтировании и изменении фильтра трафика (Лекция 10)
+  useEffect(() => {
+    dispatch(fetchActivitiesThunk(maxTraffic));
+  }, [dispatch, maxTraffic]);
 
-    const query = newFilters.search.trim().toLowerCase();
-    const filtered = MOCK_ACTIVITIES.filter((item) => {
-      const matchSearch =
-        !query ||
+  // Клиентская дофильтрация по строке поиска
+  const filteredActivities = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return activities;
+    return activities.filter((item) => {
+      return (
         item.activity_title.toLowerCase().includes(query) ||
-        item.activity_description.toLowerCase().includes(query);
-
-      const matchTraffic =
-        newFilters.maxTraffic === 0 || item.average_traffic_mbps <= newFilters.maxTraffic;
-
-      return matchSearch && matchTraffic;
+        (item.activity_description &&
+          item.activity_description.toLowerCase().includes(query))
+      );
     });
-
-    setActivities(filtered);
-  };
-
-  const handleResetFilters = () => {
-    setActiveFilters(DEFAULT_FILTERS);
-    // При сбросе возвращаем полный набор mock-данных
-    setActivities(MOCK_ACTIVITIES);
-  };
+  }, [activities, search]);
 
   const handleCardClick = (id: number) => {
-    // Переход в ленту с открытием выбранной активности
     navigate(`${ROUTES.FEED}?activity_id=${id}`);
+  };
+
+  const handleDeleteActivity = (id: number) => {
+    if (window.confirm('Вы действительно хотите удалить данную активность?')) {
+      dispatch(deleteActivityThunk(id));
+    }
+  };
+
+  const handleReset = () => {
+    dispatch(resetFilters());
+    dispatch(fetchActivitiesThunk(150));
   };
 
   return (
@@ -60,21 +62,26 @@ export const CatalogPage: React.FC = () => {
         </h1>
       </div>
 
-      {/* Компонент фильтрации: props initialFilters, onApply, onReset */}
+      {/* Компонент фильтрации с привязкой к Redux */}
       <ActivityFilter
-        initialFilters={activeFilters}
-        onApply={handleApplyFilters}
-        onReset={handleResetFilters}
+        onApplyFilters={(newFilters) => {
+          dispatch(fetchActivitiesThunk(newFilters.maxTraffic));
+        }}
       />
 
-      {/* Плитка (сетка) карточек */}
-      {activities.length > 0 ? (
+      {/* Плитка (сетка по 2 карточки в ряд) */}
+      {filteredActivities.length > 0 ? (
         <div className="catalog-grid">
-          {activities.map((activity) => (
+          {filteredActivities.map((activity) => (
             <ActivityCard
               key={activity.id}
               activity={activity}
               onClick={() => handleCardClick(activity.id)}
+              onDelete={
+                activity.is_owner === 1
+                  ? () => handleDeleteActivity(activity.id)
+                  : undefined
+              }
             />
           ))}
         </div>
@@ -84,7 +91,7 @@ export const CatalogPage: React.FC = () => {
           <div className="catalog-empty-desc">
             Активностей с заданными параметрами не найдено. Нажмите «Сбросить» для возврата полного списка.
           </div>
-          <Button variant="outline-light" size="sm" onClick={handleResetFilters}>
+          <Button variant="outline-light" size="sm" onClick={handleReset}>
             Сбросить фильтры
           </Button>
         </div>

@@ -1,41 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { ActivityFilterParams } from '../../../entities/activity/model/types';
+import { useAppDispatch, useAppSelector } from '../../../app/store/hooks';
+import { setFilters, resetFilters } from '../model/filterSlice';
 import '../../../styles/features/ActivityFilter.css';
 
 interface ActivityFilterProps {
-  initialFilters: ActivityFilterParams;
-  onApply: (filters: ActivityFilterParams) => void;
-  onReset: () => void;
+  onApplyFilters?: (filters: { search: string; maxTraffic: number }) => void;
 }
 
-export const ActivityFilter: React.FC<ActivityFilterProps> = ({
-  initialFilters,
-  onApply,
-  onReset,
-}) => {
-  // Локальное состояние полей ввода до нажатия кнопки "Поиск" (Скриншоты 5-6, Лекция 9 слайд 6)
-  const [searchValue, setSearchValue] = useState<string>(initialFilters.search);
-  const [trafficValue, setTrafficValue] = useState<number>(initialFilters.maxTraffic);
+export const ActivityFilter: React.FC<ActivityFilterProps> = ({ onApplyFilters }) => {
+  const dispatch = useAppDispatch();
+  const reduxFilters = useAppSelector((state) => state.filter);
+
+  // Локальный буфер формы до момента нажатия кнопки отправки (onSubmit)
+  const [searchValue, setSearchValue] = useState<string>(reduxFilters.search);
+  const [trafficValue, setTrafficValue] = useState<number>(reduxFilters.maxTraffic);
+
+  // Синхронизация локальных значений при внешнем сбросе фильтра в Redux (например, при логауте)
+  useEffect(() => {
+    setSearchValue(reduxFilters.search);
+    setTrafficValue(reduxFilters.maxTraffic);
+  }, [reduxFilters]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onApply({
+    const newFilters = {
       search: searchValue,
       maxTraffic: trafficValue,
-    });
+    };
+    // Сохраняем в Redux Toolkit
+    dispatch(setFilters(newFilters));
+    onApplyFilters?.(newFilters);
   };
 
   const handleReset = () => {
     setSearchValue('');
     setTrafficValue(150);
-    onReset();
+    dispatch(resetFilters());
+    onApplyFilters?.({ search: '', maxTraffic: 150 });
   };
 
   return (
     <div className="filter-card">
       <Form onSubmit={handleSubmit}>
-        {/* Поле текстового поиска по названию/описанию */}
+        {/* Поле текстового поиска по названию */}
         <Form.Group className="search-input-group">
           <span className="search-icon">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +64,7 @@ export const ActivityFilter: React.FC<ActivityFilterProps> = ({
           />
         </Form.Group>
 
-        {/* Фильтр по объему трафика (React-Bootstrap Form.Range) */}
+        {/* Фильтр по объему трафика */}
         <Form.Group className="mb-3">
           <Form.Label className="filter-label">
             <span>Максимальный трафик:</span>
@@ -76,7 +84,7 @@ export const ActivityFilter: React.FC<ActivityFilterProps> = ({
           </div>
         </Form.Group>
 
-        {/* Кнопки управления поиском */}
+        {/* Кнопки управления */}
         <Row className="g-2">
           <Col xs={7}>
             <Button type="submit" className="btn-filter-apply w-100">

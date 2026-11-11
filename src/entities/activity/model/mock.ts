@@ -1,10 +1,10 @@
-import { NetworkActivity } from './types';
+import { NetworkActivityResponse } from '../../../shared/api/generated/Api';
 
 // Fallback assets
 export const DEFAULT_IMAGE = '/default.svg';
 export const DEFAULT_VIDEO = '/default.mp4';
 
-export const MOCK_ACTIVITIES: NetworkActivity[] = [
+export const MOCK_ACTIVITIES: NetworkActivityResponse[] = [
   {
     id: 1,
     activity_title: '4K Стриминг (Smart TV)',

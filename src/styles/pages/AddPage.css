@@ -1,0 +1,117 @@
+.add-page {
+  padding: 20px 16px 36px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.add-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.add-header {
+  margin-bottom: 16px;
+}
+
+.add-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.add-progress {
+  height: 6px !important;
+  background-color: var(--border-color) !important;
+  border-radius: 3px !important;
+}
+
+.add-progress .progress-bar {
+  background-color: var(--accent) !important;
+}
+
+.add-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.text-accent {
+  color: var(--accent) !important;
+  font-weight: 700;
+}
+
+.custom-file-input {
+  background-color: var(--bg-primary) !important;
+  border: 1px dashed var(--border-color) !important;
+  color: var(--text-primary) !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+  border-radius: 10px !important;
+}
+
+.custom-file-input:focus {
+  border-color: var(--accent) !important;
+}
+
+.btn-add-submit {
+  background: var(--accent) !important;
+  color: #0b0d10 !important;
+  border: none !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-add-submit:hover:not(:disabled) {
+  background: var(--accent-hover) !important;
+  transform: translateY(-1px);
+}
+
+.draft-preview-badge {
+  background: rgba(0, 243, 187, 0.1);
+  border: 1px solid var(--accent);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.draft-preview-badge strong {
+  color: var(--accent);
+}
+
+.add-auth-required-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 36px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  margin-top: 40px;
+}
+
+.add-lock-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.btn-auth-redirect {
+  background: var(--accent) !important;
+  color: #0b0d10 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+.add-alert {
+  font-size: 12px;
+  border-radius: 8px;
+}
