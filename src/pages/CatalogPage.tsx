@@ -47,19 +47,17 @@ export const CatalogPage: React.FC = () => {
   };
 
   const handleCardClick = (id: number) => {
-    navigate(`${ROUTES.DETAIL}/${id}`);
+    // Переход в ленту с открытием выбранной активности
+    navigate(`${ROUTES.FEED}?activity_id=${id}`);
   };
 
   return (
     <div className="catalog-page">
-      {/* Заголовок страницы с бейджем количества */}
+      {/* Заголовок страницы */}
       <div className="catalog-header">
         <h1 className="catalog-header-title">
           <span>Каталог активностей</span>
         </h1>
-        <span className="catalog-counter-badge">
-          Показано: {activities.length} из {MOCK_ACTIVITIES.length}
-        </span>
       </div>
 
       {/* Компонент фильтрации: props initialFilters, onApply, onReset */}

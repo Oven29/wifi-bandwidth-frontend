@@ -54,12 +54,9 @@ export const FeedPage: React.FC = () => {
 
   return (
     <div className="feed-page">
-      {/* Верхний бар с заголовком и счетчиком */}
+      {/* Верхний бар с логотипом */}
       <div className="feed-top-bar">
         <div className="feed-logo">NETWORK ACTIVITIES</div>
-        <div className="feed-counter">
-          {currentIndex + 1} / {MOCK_ACTIVITIES.length}
-        </div>
       </div>
 
       {/* Медиа контейнер (видео или fallback-фото) */}
