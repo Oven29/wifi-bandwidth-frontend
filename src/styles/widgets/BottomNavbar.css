@@ -1,10 +1,17 @@
 .bottom-navbar {
-  background-color: rgba(23, 26, 33, 0.95) !important;
+  position: fixed !important;
+  bottom: 0;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  max-width: 390px !important;
+  height: var(--navbar-height);
+  background-color: rgba(20, 21, 38, 0.95) !important;
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-color);
-  height: var(--navbar-height);
   padding: 0;
   z-index: 1030;
+  box-sizing: border-box;
 }
 
 .bottom-tab-item {
@@ -45,11 +52,13 @@
   border-radius: 0 0 2px 2px;
 }
 
+/* Недоступные для гостя пункты: просто серые и некликабельные */
 .bottom-tab-item:disabled,
 .bottom-tab-item.disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  pointer-events: auto; /* Позволяет показывать tooltip или title при наведении */
+  opacity: 0.35;
+  color: var(--text-muted) !important;
+  cursor: default !important;
+  pointer-events: none !important;
 }
 
 .bottom-tab-icon {
@@ -58,15 +67,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-}
-
-.lock-badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  font-size: 9px;
-  color: var(--danger);
-  line-height: 1;
 }
 
 .tab-label {

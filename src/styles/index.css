@@ -1,14 +1,14 @@
 :root {
-  --bg-primary: #0D0F12;
-  --bg-surface: #171A21;
-  --bg-surface-elevated: #20242E;
+  --bg-primary: #141526;
+  --bg-surface: #1E2238;
+  --bg-surface-elevated: #242944;
   --border-color: #2D3342;
-  --border-subtle: #212633;
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --accent: #00F3BB;
-  --accent-hover: #00D2A2;
+  --accent-hover: #00C295;
   --accent-soft: rgba(0, 243, 187, 0.12);
-  --text-primary: #F4F6FB;
-  --text-secondary: #9BA3B5;
+  --text-primary: #FFFFFF;
+  --text-secondary: #8F9BB3;
   --text-muted: #646C7F;
   --danger: #FF4B72;
   --navbar-height: 64px;
@@ -22,46 +22,62 @@
 
 html, body {
   width: 100%;
-  height: 100%;
-  background-color: var(--bg-primary);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #07080b; /* Темная фоновая заливка по краям экрана */
   color: var(--text-primary);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
   overflow-x: hidden;
 }
 
 #root {
-  min-height: 100%;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  background-color: #07080b;
 }
 
+/* Вертикальный мобильный экран формата TikTok / Смартфон (по центру) */
 .app-shell {
+  width: 100%;
+  max-width: 390px;
   min-height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
   display: flex;
   flex-direction: column;
   padding-bottom: var(--navbar-height);
-  position: relative;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .app-content {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
+  width: 100%;
 }
 
-/* Custom scrollbar */
+/* Стилизация скроллбара внутри мобильного контейнера */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);

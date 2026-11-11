@@ -1,8 +1,7 @@
 .detail-page {
-  padding: 24px 16px 40px;
-  max-width: 860px;
-  margin: 0 auto;
+  padding: 16px 16px 32px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .detail-top-bar {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Navbar, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import { ROUTES } from '../../app/routes';
 import '../../styles/widgets/BottomNavbar.css';
 
@@ -11,12 +11,6 @@ export const BottomNavbar: React.FC = () => {
   const isFeed = location.pathname === ROUTES.HOME || location.pathname === ROUTES.FEED;
   const isCatalog = location.pathname === ROUTES.CATALOG;
 
-  const renderDisabledTooltip = (message: string) => (
-    <Tooltip id={`tab-disabled-tooltip-${message}`}>
-      {message}
-    </Tooltip>
-  );
-
   return (
     <Navbar className="bottom-navbar" fixed="bottom">
       <Nav className="w-100 d-flex flex-row justify-content-around">
@@ -26,7 +20,6 @@ export const BottomNavbar: React.FC = () => {
             type="button"
             className={`bottom-tab-item w-100 ${isFeed ? 'active' : ''}`}
             onClick={() => navigate(ROUTES.FEED)}
-            title="Лента активностей"
           >
             <span className="bottom-tab-icon">
               <svg width="19" height="13" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,30 +38,23 @@ export const BottomNavbar: React.FC = () => {
 
         {/* Пункт 2: Добавление (НЕДОСТУПЕН ДЛЯ ГОСТЯ ПО ЗАДАНИЮ ЛР5) */}
         <Nav.Item className="flex-fill">
-          <OverlayTrigger
-            placement="top"
-            overlay={renderDisabledTooltip('Добавление доступно только авторизованным пользователям (ЛР6)')}
+          <button
+            type="button"
+            className="bottom-tab-item disabled w-100"
+            disabled
           >
-            <button
-              type="button"
-              className="bottom-tab-item disabled w-100"
-              disabled
-              title="Недоступно для гостя"
-            >
-              <span className="bottom-tab-icon">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M1.5 7.5H13.5M7.5 1.5V13.5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="lock-badge">🔒</span>
-              </span>
-              <span className="tab-label">Добавление</span>
-            </button>
-          </OverlayTrigger>
+            <span className="bottom-tab-icon">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M1.5 7.5H13.5M7.5 1.5V13.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span className="tab-label">Добавление</span>
+          </button>
         </Nav.Item>
 
         {/* Пункт 3: Плитка (ДОСТУПЕН) */}
@@ -77,7 +63,6 @@ export const BottomNavbar: React.FC = () => {
             type="button"
             className={`bottom-tab-item w-100 ${isCatalog ? 'active' : ''}`}
             onClick={() => navigate(ROUTES.CATALOG)}
-            title="Каталог (плитка)"
           >
             <span className="bottom-tab-icon">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -93,31 +78,24 @@ export const BottomNavbar: React.FC = () => {
 
         {/* Пункт 4: Вход (НЕДОСТУПЕН ДЛЯ ГОСТЯ ПО ЗАДАНИЮ ЛР5) */}
         <Nav.Item className="flex-fill">
-          <OverlayTrigger
-            placement="top"
-            overlay={renderDisabledTooltip('Авторизация будет реализована в Лабораторной работе №6')}
+          <button
+            type="button"
+            className="bottom-tab-item disabled w-100"
+            disabled
           >
-            <button
-              type="button"
-              className="bottom-tab-item disabled w-100"
-              disabled
-              title="Недоступно для гостя"
-            >
-              <span className="bottom-tab-icon">
-                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="7.5" cy="4.5" r="3" stroke="currentColor" strokeWidth="1.8" />
-                  <path
-                    d="M1.5 13.5C1.5 10.7386 4.18629 8.5 7.5 8.5C10.8137 8.5 13.5 10.7386 13.5 13.5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="lock-badge">🔒</span>
-              </span>
-              <span className="tab-label">Вход</span>
-            </button>
-          </OverlayTrigger>
+            <span className="bottom-tab-icon">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="7.5" cy="4.5" r="3" stroke="currentColor" strokeWidth="1.8" />
+                <path
+                  d="M1.5 13.5C1.5 10.7386 4.18629 8.5 7.5 8.5C10.8137 8.5 13.5 10.7386 13.5 13.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span className="tab-label">Вход</span>
+          </button>
         </Nav.Item>
       </Nav>
     </Navbar>
