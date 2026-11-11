@@ -11,6 +11,15 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
+      '/media': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+      },
+      '/minio': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/minio/, ''),
+      },
     },
   },
 });

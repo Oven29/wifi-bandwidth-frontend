@@ -6,13 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "codegen": "swagger-typescript-api generate -p swagger.json -o ./src/shared/api/generated -n Api.ts --axios"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.14.0",
+    "axios": "^1.21.1",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.3.1",
+    "react-redux": "^9.3.1",
     "react-router-dom": "^6.22.3"
   },
   "devDependencies": {

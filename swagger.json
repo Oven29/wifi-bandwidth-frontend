@@ -1,0 +1,363 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Bandwidth Router Calc API",
+    "version": "1.0.0",
+    "description": "API определения необходимой пропускной способности Wi-Fi роутера"
+  },
+  "paths": {
+    "/api/network-activities/": {
+      "get": {
+        "tags": ["NetworkActivities"],
+        "summary": "List Activities",
+        "operationId": "listActivities",
+        "parameters": [
+          {
+            "name": "filter_traffic",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "title": "Filter Traffic"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NetworkActivityResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["NetworkActivities"],
+        "summary": "Create Draft",
+        "operationId": "createDraft",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_draft"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetworkActivityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/network-activities/feed": {
+      "get": {
+        "tags": ["NetworkActivities"],
+        "summary": "Get Feed",
+        "operationId": "getFeed",
+        "parameters": [
+          {
+            "name": "activity_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "title": "Activity Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/network-activities/draft": {
+      "get": {
+        "tags": ["NetworkActivities"],
+        "summary": "Get Draft",
+        "operationId": "getDraft",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NetworkActivityResponse"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/network-activities/{id}/publish": {
+      "put": {
+        "tags": ["NetworkActivities"],
+        "summary": "Publish Activity",
+        "operationId": "publishActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkActivityPublish"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetworkActivityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/network-activities/{id}": {
+      "delete": {
+        "tags": ["NetworkActivities"],
+        "summary": "Delete Activity",
+        "operationId": "deleteActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "id": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/network-activities/{id}/like": {
+      "post": {
+        "tags": ["NetworkActivities"],
+        "summary": "Toggle Like",
+        "operationId": "toggleLike",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/auth": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Auth",
+        "operationId": "authUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_auth_user"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "session_id": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Logout",
+        "operationId": "logoutUser",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NetworkActivityResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "activity_title",
+          "preview_image_url",
+          "preview_video_url",
+          "status"
+        ],
+        "properties": {
+          "id": { "type": "integer", "title": "Id" },
+          "activity_title": { "type": "string", "title": "Activity Title" },
+          "activity_description": { "type": "string", "title": "Activity Description", "nullable": true },
+          "average_traffic_mbps": { "type": "integer", "title": "Average Traffic Mbps", "nullable": true },
+          "max_latency_ms": { "type": "integer", "title": "Max Latency Ms", "nullable": true },
+          "preview_image_url": { "type": "string", "title": "Preview Image Url" },
+          "preview_video_url": { "type": "string", "title": "Preview Video Url" },
+          "status": { "type": "string", "title": "Status" },
+          "creator_id": { "type": "integer", "title": "Creator Id", "nullable": true },
+          "created_at": { "type": "string", "format": "date-time", "title": "Created At", "nullable": true },
+          "updated_at": { "type": "string", "format": "date-time", "title": "Updated At", "nullable": true },
+          "is_owner": { "type": "integer", "title": "Is Owner", "default": 0 },
+          "is_liked": { "type": "integer", "title": "Is Liked", "default": 0 },
+          "likes_count": { "type": "integer", "title": "Likes Count", "default": 0 }
+        },
+        "title": "NetworkActivityResponse"
+      },
+      "FeedResponse": {
+        "type": "object",
+        "properties": {
+          "activity": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/NetworkActivityResponse" },
+              { "type": "null" }
+            ]
+          },
+          "next_id": { "type": "integer", "title": "Next Id", "nullable": true },
+          "next_activity_id": { "type": "integer", "title": "Next Activity Id", "nullable": true }
+        },
+        "title": "FeedResponse"
+      },
+      "NetworkActivityPublish": {
+        "type": "object",
+        "required": ["average_traffic_mbps", "max_latency_ms"],
+        "properties": {
+          "activity_description": { "type": "string", "title": "Activity Description", "nullable": true },
+          "description": { "type": "string", "title": "Description", "nullable": true },
+          "average_traffic_mbps": { "type": "integer", "title": "Average Traffic Mbps" },
+          "max_latency_ms": { "type": "integer", "title": "Max Latency Ms" }
+        },
+        "title": "NetworkActivityPublish"
+      },
+      "Body_create_draft": {
+        "type": "object",
+        "required": ["activity_title", "pic", "video"],
+        "properties": {
+          "activity_title": { "type": "string", "title": "Activity Title" },
+          "pic": { "type": "string", "format": "binary", "title": "Pic" },
+          "video": { "type": "string", "format": "binary", "title": "Video" }
+        },
+        "title": "Body_create_draft"
+      },
+      "Body_auth_user": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": { "type": "string", "title": "Username" },
+          "password": { "type": "string", "title": "Password" }
+        },
+        "title": "Body_auth_user"
+      }
+    }
+  }
+}
