@@ -14,7 +14,7 @@ export const FeedPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
-  const { feedActivity, nextActivityId, activities } = useAppSelector(
+  const { feedActivity, activities } = useAppSelector(
     (state) => state.activity
   );
   const [expandedDesc, setExpandedDesc] = useState<boolean>(false);
@@ -23,19 +23,24 @@ export const FeedPage: React.FC = () => {
   useEffect(() => {
     const actId = searchParams.get('activity_id');
     const parsedId = actId ? Number(actId) : undefined;
-    dispatch(fetchFeedThunk(parsedId));
+    if (parsedId !== undefined) {
+      dispatch(fetchFeedThunk({ activity_id: parsedId }));
+    } else {
+      dispatch(fetchFeedThunk());
+    }
   }, [searchParams, dispatch]);
 
   const currentActivity = feedActivity || activities[0];
 
   const handleNext = () => {
     setExpandedDesc(false);
-    if (nextActivityId) {
-      dispatch(fetchFeedThunk(nextActivityId));
+    if (currentActivity?.id !== undefined) {
+      // Серверный скролл ленты: бэкенд сам находит следующую карточку после current_id (с циклическим возвратом)
+      dispatch(fetchFeedThunk({ current_id: currentActivity.id }));
     } else if (activities.length > 0) {
-      const curIdx = activities.findIndex((a) => a.id === currentActivity?.id);
-      const nextIdx = (curIdx + 1) % activities.length;
-      dispatch(fetchFeedThunk(activities[nextIdx].id));
+      dispatch(fetchFeedThunk({ activity_id: activities[0].id }));
+    } else {
+      dispatch(fetchFeedThunk());
     }
   };
 
@@ -43,10 +48,25 @@ export const FeedPage: React.FC = () => {
     setExpandedDesc(false);
     if (activities.length > 0 && currentActivity) {
       const curIdx = activities.findIndex((a) => a.id === currentActivity.id);
-      const prevIdx = (curIdx - 1 + activities.length) % activities.length;
-      dispatch(fetchFeedThunk(activities[prevIdx].id));
+      if (curIdx !== -1) {
+        const prevIdx = (curIdx - 1 + activities.length) % activities.length;
+        dispatch(fetchFeedThunk({ activity_id: activities[prevIdx].id }));
+      }
     }
   };
+
+  // Навигация с клавиатуры (стрелки вверх/вниз)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        handleNext();
+      } else if (e.key === 'ArrowUp') {
+        handlePrev();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentActivity, activities]);
 
   const handleToggleLike = async () => {
     if (!currentActivity) return;
@@ -61,11 +81,11 @@ export const FeedPage: React.FC = () => {
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!currentActivity) return;
     if (window.confirm('Удалить эту активность?')) {
-      dispatch(deleteActivityThunk(currentActivity.id));
-      handleNext();
+      await dispatch(deleteActivityThunk(currentActivity.id));
+      dispatch(fetchFeedThunk());
     }
   };
 

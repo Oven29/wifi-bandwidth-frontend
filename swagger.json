@@ -80,6 +80,15 @@
               "type": "integer",
               "title": "Activity Id"
             }
+          },
+          {
+            "name": "current_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "title": "Current Id"
+            }
           }
         ],
         "responses": {
@@ -322,9 +331,7 @@
               { "$ref": "#/components/schemas/NetworkActivityResponse" },
               { "type": "null" }
             ]
-          },
-          "next_id": { "type": "integer", "title": "Next Id", "nullable": true },
-          "next_activity_id": { "type": "integer", "title": "Next Activity Id", "nullable": true }
+          }
         },
         "title": "FeedResponse"
       },

@@ -60,10 +60,6 @@ export interface NetworkActivityResponse {
 /** FeedResponse */
 export interface FeedResponse {
   activity?: NetworkActivityResponse | null;
-  /** Next Id */
-  next_id?: number | null;
-  /** Next Activity Id */
-  next_activity_id?: number | null;
 }
 
 /** NetworkActivityPublish */
@@ -340,6 +336,8 @@ export class Api<
       query?: {
         /** Activity Id */
         activity_id?: number;
+        /** Current Id */
+        current_id?: number;
       },
       params: RequestParams = {},
     ) =>

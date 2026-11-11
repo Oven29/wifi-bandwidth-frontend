@@ -9,7 +9,6 @@ import { MOCK_ACTIVITIES } from './mock';
 export interface ActivityState {
   activities: NetworkActivityResponse[];
   feedActivity: NetworkActivityResponse | null;
-  nextActivityId: number | null;
   draft: NetworkActivityResponse | null;
   loading: boolean;
   error: string | null;
@@ -18,7 +17,6 @@ export interface ActivityState {
 const initialState: ActivityState = {
   activities: MOCK_ACTIVITIES,
   feedActivity: MOCK_ACTIVITIES[0] || null,
-  nextActivityId: MOCK_ACTIVITIES[1]?.id || null,
   draft: null,
   loading: false,
   error: null,
@@ -47,31 +45,31 @@ export const fetchActivitiesThunk = createAsyncThunk<
   }
 });
 
-// 2. Сгенерированный метод: getFeed
+// 2. Сгенерированный метод: getFeed (поддержка activity_id, current_id или без параметров)
 export const fetchFeedThunk = createAsyncThunk<
-  { activity: NetworkActivityResponse | null; next_activity_id?: number | null },
-  number | undefined
->('networkActivities/fetchFeed', async (activityId) => {
+  NetworkActivityResponse | null,
+  { activity_id?: number; current_id?: number } | number | undefined
+>('networkActivities/fetchFeed', async (arg) => {
+  const query =
+    typeof arg === 'number'
+      ? { activity_id: arg }
+      : arg;
+
   try {
-    const response = await networkActivitiesApi.getFeed(
-      activityId !== undefined ? { activity_id: activityId } : undefined
-    );
-    return {
-      activity: response.data.activity || null,
-      next_activity_id: response.data.next_activity_id ?? response.data.next_id ?? null,
-    };
+    const response = await networkActivitiesApi.getFeed(query);
+    return response.data.activity || null;
   } catch {
-    // Fallback на mock-коллекцию
-    const targetIdx =
-      activityId !== undefined
-        ? MOCK_ACTIVITIES.findIndex((item) => item.id === activityId)
-        : 0;
-    const current = MOCK_ACTIVITIES[targetIdx !== -1 ? targetIdx : 0] || null;
-    const nextIdx = (targetIdx + 1) % MOCK_ACTIVITIES.length;
-    return {
-      activity: current,
-      next_activity_id: MOCK_ACTIVITIES[nextIdx]?.id || null,
-    };
+    // Fallback на mock-коллекцию при отсутствии доступа к бэкенду (только как гость)
+    if (query?.activity_id !== undefined) {
+      const found = MOCK_ACTIVITIES.find((item) => item.id === query.activity_id);
+      return found || MOCK_ACTIVITIES[0] || null;
+    }
+    if (query?.current_id !== undefined) {
+      const curIdx = MOCK_ACTIVITIES.findIndex((item) => item.id === query.current_id);
+      const nextIdx = curIdx !== -1 ? (curIdx + 1) % MOCK_ACTIVITIES.length : 0;
+      return MOCK_ACTIVITIES[nextIdx] || null;
+    }
+    return MOCK_ACTIVITIES[0] || null;
   }
 });
 
@@ -191,8 +189,7 @@ export const activitySlice = createSlice({
       })
       .addCase(fetchFeedThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.feedActivity = action.payload.activity;
-        state.nextActivityId = action.payload.next_activity_id ?? null;
+        state.feedActivity = action.payload;
       })
       .addCase(fetchFeedThunk.rejected, (state, action) => {
         state.loading = false;
