@@ -40,11 +40,6 @@
   margin-bottom: 6px;
 }
 
-.text-accent {
-  color: var(--accent) !important;
-  font-weight: 700;
-}
-
 .custom-file-input {
   background-color: var(--bg-primary) !important;
   border: 1px dashed var(--border-color) !important;
@@ -58,6 +53,67 @@
   border-color: var(--accent) !important;
 }
 
+/* Блок предпросмотра медиа */
+.add-media-preview-box {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.add-preview-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.add-preview-video {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 6px;
+  background: #000;
+}
+
+.add-preview-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 0 2px;
+}
+
+.add-preview-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+  color: var(--text-secondary);
+}
+
+.add-preview-size {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Цифровые поля ввода */
+.add-number-input {
+  max-width: 120px !important;
+  font-weight: 700 !important;
+  color: var(--accent) !important;
+}
+
+.add-unit-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Кнопки первого шага */
 .btn-add-submit {
   background: var(--accent) !important;
   color: #0b0d10 !important;
@@ -71,6 +127,50 @@
 .btn-add-submit:hover:not(:disabled) {
   background: var(--accent-hover) !important;
   transform: translateY(-1px);
+}
+
+/* Кнопки второго шага одинакового размера */
+.add-step2-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-step2-action {
+  flex: 1 !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 0 12px !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  white-space: nowrap !important;
+}
+
+.btn-step2-publish {
+  background: var(--accent) !important;
+  color: #0b0d10 !important;
+}
+
+.btn-step2-publish:hover:not(:disabled) {
+  background: var(--accent-hover) !important;
+  transform: translateY(-1px);
+}
+
+.btn-step2-cancel {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.btn-step2-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: var(--text-primary) !important;
 }
 
 .draft-preview-badge {

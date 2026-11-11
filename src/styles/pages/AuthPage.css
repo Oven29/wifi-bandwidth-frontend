@@ -47,11 +47,85 @@
   margin: 0;
 }
 
+/* Переключатель Вход / Регистрация */
+.auth-tabs {
+  display: flex;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.auth-tab-btn.active {
+  background: var(--accent);
+  color: #0b0d10;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 243, 187, 0.2);
+}
+
 .auth-label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 6px;
+}
+
+/* Обертка для поля с паролем и глазком */
+.auth-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-password-input {
+  padding-right: 44px !important;
+}
+
+.auth-eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+  z-index: 2;
+}
+
+.auth-eye-btn:hover {
+  color: var(--accent);
+}
+
+.auth-validation-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  padding-left: 2px;
 }
 
 .btn-auth-submit {
@@ -72,22 +146,6 @@
 .auth-alert {
   font-size: 12px;
   border-radius: 8px;
-}
-
-.auth-hint {
-  font-size: 11px;
-  color: var(--text-muted);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.auth-hint code {
-  color: var(--accent);
-  background: rgba(0, 243, 187, 0.08);
-  padding: 2px 6px;
-  border-radius: 4px;
 }
 
 .auth-logged-in-box {

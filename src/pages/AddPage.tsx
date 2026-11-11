@@ -22,12 +22,38 @@ export const AddPage: React.FC = () => {
   const [picFile, setPicFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
 
+  // Предпросмотр медиафайлов
+  const [picPreview, setPicPreview] = useState<string | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+
   // Шаг 2: Публикация черновика
   const [description, setDescription] = useState<string>('');
   const [traffic, setTraffic] = useState<number>(35);
   const [latency, setLatency] = useState<number>(25);
 
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Генерация URL для предпросмотра изображения
+  useEffect(() => {
+    if (!picFile) {
+      setPicPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(picFile);
+    setPicPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [picFile]);
+
+  // Генерация URL для предпросмотра видео
+  useEffect(() => {
+    if (!videoFile) {
+      setVideoPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(videoFile);
+    setVideoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [videoFile]);
 
   // Проверка существующего черновика пользователя при входе
   useEffect(() => {
@@ -66,7 +92,7 @@ export const AddPage: React.FC = () => {
     );
   }
 
-  // Обработка Шага 1: Загрузка медиа в MinIO и создание черновика
+  // Обработка Шага 1: Загрузка медиа и создание черновика
   const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -76,7 +102,7 @@ export const AddPage: React.FC = () => {
       return;
     }
     if (!picFile) {
-      setFormError('Выберите превью-изображение (PNG, JPG, SVG)');
+      setFormError('Выберите превью-изображение (PNG, JPG, WebP, SVG)');
       return;
     }
     if (!videoFile) {
@@ -163,9 +189,7 @@ export const AddPage: React.FC = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label className="add-label">
-                Превью-изображение (в MinIO / Silo)
-              </Form.Label>
+              <Form.Label className="add-label">Превью-изображение</Form.Label>
               <Form.Control
                 type="file"
                 accept="image/*"
@@ -176,14 +200,29 @@ export const AddPage: React.FC = () => {
                 disabled={loading}
               />
               <Form.Text className="text-secondary small">
-                Будет загружено в S3-хранилище MinIO
+                Поддерживаются форматы JPG, PNG, WebP, SVG
               </Form.Text>
+
+              {/* Предпросмотр изображения */}
+              {picPreview && (
+                <div className="add-media-preview-box mt-2">
+                  <img
+                    src={picPreview}
+                    alt="Предпросмотр изображения"
+                    className="add-preview-img"
+                  />
+                  <div className="add-preview-info">
+                    <span className="add-preview-name">{picFile?.name}</span>
+                    <span className="add-preview-size">
+                      {picFile && (picFile.size / 1024).toFixed(1)} КБ
+                    </span>
+                  </div>
+                </div>
+              )}
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label className="add-label">
-                Превью-видеоролик (в MinIO / Silo)
-              </Form.Label>
+              <Form.Label className="add-label">Превью-видеоролик</Form.Label>
               <Form.Control
                 type="file"
                 accept="video/*"
@@ -194,8 +233,26 @@ export const AddPage: React.FC = () => {
                 disabled={loading}
               />
               <Form.Text className="text-secondary small">
-                Видеофайл для полноэкранного плеера в Ленте
+                Видеофайл для полноэкранного плеера (MP4, WebM)
               </Form.Text>
+
+              {/* Предпросмотр видео */}
+              {videoPreview && (
+                <div className="add-media-preview-box mt-2">
+                  <video
+                    src={videoPreview}
+                    controls
+                    playsInline
+                    className="add-preview-video"
+                  />
+                  <div className="add-preview-info">
+                    <span className="add-preview-name">{videoFile?.name}</span>
+                    <span className="add-preview-size">
+                      {videoFile && (videoFile.size / (1024 * 1024)).toFixed(2)} МБ
+                    </span>
+                  </div>
+                </div>
+              )}
             </Form.Group>
 
             <Button
@@ -203,7 +260,7 @@ export const AddPage: React.FC = () => {
               className="btn-add-submit w-100 py-2"
               disabled={loading}
             >
-              {loading ? 'Загрузка в MinIO...' : 'Создать черновик →'}
+              {loading ? 'Создание черновика...' : 'Создать черновик →'}
             </Button>
           </Form>
         ) : (
@@ -227,26 +284,51 @@ export const AddPage: React.FC = () => {
               />
             </Form.Group>
 
+            {/* Ввод среднего трафика через цифровой input + синхронный слайдер */}
             <Form.Group className="mb-3">
-              <Form.Label className="add-label d-flex justify-content-between">
-                <span>Средний трафик:</span>
-                <span className="text-accent">{traffic} Мбит/с</span>
-              </Form.Label>
+              <Form.Label className="add-label">Средний трафик</Form.Label>
+              <div className="d-flex align-items-center gap-2">
+                <Form.Control
+                  type="number"
+                  min={1}
+                  max={1000}
+                  className="custom-form-control add-number-input"
+                  value={traffic}
+                  onChange={(e) =>
+                    setTraffic(Math.max(1, Number(e.target.value) || 1))
+                  }
+                  disabled={loading}
+                />
+                <span className="add-unit-badge">Мбит/с</span>
+              </div>
               <Form.Range
                 min={1}
-                max={150}
+                max={200}
                 step={1}
                 value={traffic}
                 onChange={(e) => setTraffic(Number(e.target.value))}
                 disabled={loading}
+                className="mt-2"
               />
             </Form.Group>
 
+            {/* Ввод пинга/задержки через цифровой input + синхронный слайдер */}
             <Form.Group className="mb-4">
-              <Form.Label className="add-label d-flex justify-content-between">
-                <span>Максимальная задержка (пинг):</span>
-                <span className="text-accent">{latency} мс</span>
-              </Form.Label>
+              <Form.Label className="add-label">Максимальная задержка (пинг)</Form.Label>
+              <div className="d-flex align-items-center gap-2">
+                <Form.Control
+                  type="number"
+                  min={1}
+                  max={2000}
+                  className="custom-form-control add-number-input"
+                  value={latency}
+                  onChange={(e) =>
+                    setLatency(Math.max(1, Number(e.target.value) || 1))
+                  }
+                  disabled={loading}
+                />
+                <span className="add-unit-badge">мс</span>
+              </div>
               <Form.Range
                 min={1}
                 max={500}
@@ -254,25 +336,28 @@ export const AddPage: React.FC = () => {
                 value={latency}
                 onChange={(e) => setLatency(Number(e.target.value))}
                 disabled={loading}
+                className="mt-2"
               />
             </Form.Group>
 
-            <Button
-              type="submit"
-              className="btn-add-submit w-100 mb-2 py-2"
-              disabled={loading}
-            >
-              {loading ? 'Публикация...' : 'Опубликовать в каталоге ✓'}
-            </Button>
-
-            <Button
-              variant="outline-secondary"
-              className="w-100 py-2"
-              onClick={() => dispatch(clearDraft())}
-              disabled={loading}
-            >
-              Отменить черновик
-            </Button>
+            {/* Одинаковые по размеру кнопки второго шага */}
+            <div className="add-step2-buttons">
+              <Button
+                type="submit"
+                className="btn-step2-action btn-step2-publish"
+                disabled={loading}
+              >
+                {loading ? 'Публикация...' : 'Опубликовать ✓'}
+              </Button>
+              <Button
+                type="button"
+                className="btn-step2-action btn-step2-cancel"
+                onClick={() => dispatch(clearDraft())}
+                disabled={loading}
+              >
+                Отменить черновик
+              </Button>
+            </div>
           </Form>
         )}
       </div>

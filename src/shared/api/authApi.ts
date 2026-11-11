@@ -11,7 +11,30 @@ export interface AuthSuccessResponse {
   session_id: string;
 }
 
+export interface RegisterResponse {
+  id: number;
+  username: string;
+}
+
 export const authApi = {
+  /**
+   * Регистрация нового пользователя (POST /api/users/register).
+   * Отправляет application/json с { username, password }.
+   */
+  async register(username: string, password: string): Promise<RegisterResponse> {
+    const response = await axios.post<RegisterResponse>(
+      '/api/users/register',
+      { username, password },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  },
+
   /**
    * Авторизация пользователя по username/password.
    * Отправляет application/x-www-form-urlencoded запрос на /api/users/auth.
