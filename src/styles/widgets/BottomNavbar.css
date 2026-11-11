@@ -1,0 +1,74 @@
+.bottom-navbar {
+  background-color: rgba(23, 26, 33, 0.95) !important;
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-color);
+  height: var(--navbar-height);
+  padding: 0;
+  z-index: 1030;
+}
+
+.bottom-tab-item {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: var(--navbar-height);
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+}
+
+.bottom-tab-item:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.bottom-tab-item.active {
+  color: var(--accent);
+}
+
+.bottom-tab-item.active::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  border-radius: 0 0 2px 2px;
+}
+
+.bottom-tab-item:disabled,
+.bottom-tab-item.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: auto; /* Позволяет показывать tooltip или title при наведении */
+}
+
+.bottom-tab-icon {
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.lock-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  font-size: 9px;
+  color: var(--danger);
+  line-height: 1;
+}
+
+.tab-label {
+  letter-spacing: 0.2px;
+}
