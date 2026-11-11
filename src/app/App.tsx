@@ -15,12 +15,26 @@ export const App: React.FC = () => {
       <div className="app-shell">
         <main className="app-content">
           <Routes>
-            <Route path={ROUTES.HOME} element={<FeedPage />} />
+            {/* Тематические маршруты по доменной модели Network Activities */}
+            <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.FEED} replace />} />
             <Route path={ROUTES.FEED} element={<FeedPage />} />
             <Route path={ROUTES.CATALOG} element={<CatalogPage />} />
-            <Route path={ROUTES.ADD} element={<AddPage />} />
-            <Route path={ROUTES.LOGIN} element={<AuthPage />} />
+            <Route path="/network-activities/catalog" element={<Navigate to={ROUTES.CATALOG} replace />} />
+            <Route path={ROUTES.DRAFT} element={<AddPage />} />
+            <Route path="/network-activities/add" element={<Navigate to={ROUTES.DRAFT} replace />} />
+            <Route path={ROUTES.AUTH} element={<AuthPage />} />
+            <Route path="/users/login" element={<Navigate to={ROUTES.AUTH} replace />} />
             <Route path={`${ROUTES.DETAIL}/:id`} element={<DetailPage />} />
+
+            {/* Алиасы со старых путей для совместимости */}
+            <Route path="/feed" element={<Navigate to={ROUTES.FEED} replace />} />
+            <Route path="/catalog" element={<Navigate to={ROUTES.CATALOG} replace />} />
+            <Route path="/draft" element={<Navigate to={ROUTES.DRAFT} replace />} />
+            <Route path="/add" element={<Navigate to={ROUTES.DRAFT} replace />} />
+            <Route path="/login" element={<Navigate to={ROUTES.AUTH} replace />} />
+            <Route path="/auth" element={<Navigate to={ROUTES.AUTH} replace />} />
+
+            {/* Fallback на тематическую ленту */}
             <Route path="*" element={<Navigate to={ROUTES.FEED} replace />} />
           </Routes>
         </main>

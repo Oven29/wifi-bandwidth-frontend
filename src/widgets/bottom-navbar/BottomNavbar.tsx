@@ -16,10 +16,26 @@ export const BottomNavbar: React.FC = () => {
   // Состояние авторизации из Redux Toolkit (Скриншот 9)
   const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const isFeed = location.pathname === ROUTES.HOME || location.pathname === ROUTES.FEED;
-  const isCatalog = location.pathname === ROUTES.CATALOG;
-  const isAdd = location.pathname === ROUTES.ADD;
-  const isLogin = location.pathname === ROUTES.LOGIN;
+  const isFeed =
+    location.pathname === ROUTES.HOME ||
+    location.pathname === ROUTES.FEED ||
+    location.pathname === '/feed';
+  const isCatalog =
+    location.pathname === ROUTES.CATALOG ||
+    location.pathname === '/network-activities/catalog' ||
+    location.pathname === '/catalog';
+  const isAdd =
+    location.pathname === ROUTES.ADD ||
+    location.pathname === ROUTES.DRAFT ||
+    location.pathname === '/network-activities/add' ||
+    location.pathname === '/draft' ||
+    location.pathname === '/add';
+  const isLogin =
+    location.pathname === ROUTES.LOGIN ||
+    location.pathname === ROUTES.AUTH ||
+    location.pathname === '/users/login' ||
+    location.pathname === '/login' ||
+    location.pathname === '/auth';
 
   const handleLogout = async () => {
     // 1. Ручной вызов деавторизации через Axios

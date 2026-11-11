@@ -1,8 +1,11 @@
 export const ROUTES = {
   HOME: '/',
-  FEED: '/feed',
-  CATALOG: '/catalog',
-  DETAIL: '/detail',
-  ADD: '/add',
-  LOGIN: '/login',
+  NETWORK_ACTIVITIES: '/network-activities',
+  FEED: '/network-activities/feed',
+  CATALOG: '/network-activities',
+  ADD: '/network-activities/draft',
+  DRAFT: '/network-activities/draft',
+  DETAIL: '/network-activities',
+  LOGIN: '/users/auth',
+  AUTH: '/users/auth',
 } as const;
