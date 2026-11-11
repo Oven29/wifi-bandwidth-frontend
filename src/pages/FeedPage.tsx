@@ -5,7 +5,6 @@ import {
   fetchFeedThunk,
   toggleLikeThunk,
   deleteActivityThunk,
-  localToggleLike,
 } from '../entities/activity/model/activitySlice';
 import { MediaViewer } from '../widgets/media-viewer/MediaViewer';
 import '../styles/pages/FeedPage.css';
@@ -14,6 +13,7 @@ export const FeedPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { feedActivity, activities } = useAppSelector(
     (state) => state.activity
   );
@@ -69,15 +69,11 @@ export const FeedPage: React.FC = () => {
   }, [currentActivity, activities]);
 
   const handleToggleLike = async () => {
-    if (!currentActivity) return;
+    if (!isAuthenticated || !currentActivity) return;
     try {
-      const res = await dispatch(toggleLikeThunk(currentActivity.id));
-      if (toggleLikeThunk.rejected.match(res)) {
-        // Если бэкенд недоступен, выполняем локальный тогл для гостя (Скриншоты 1-2)
-        dispatch(localToggleLike(currentActivity.id));
-      }
+      await dispatch(toggleLikeThunk(currentActivity.id));
     } catch {
-      dispatch(localToggleLike(currentActivity.id));
+      // Игнорируем ошибки сети
     }
   };
 
@@ -163,15 +159,21 @@ export const FeedPage: React.FC = () => {
             </button>
           )}
 
-          {/* Кнопка Лайка */}
+          {/* Кнопка Лайка (заблокирована для неавторизованных пользователей) */}
           <button
             type="button"
-            className={`feed-action-btn ${isLiked ? 'liked' : ''}`}
+            className={`feed-action-btn ${isLiked ? 'liked' : ''} ${!isAuthenticated ? 'disabled' : ''}`}
             onClick={(e) => {
               e.stopPropagation();
+              if (!isAuthenticated) return;
               handleToggleLike();
             }}
-            title="Отметка нравится"
+            disabled={!isAuthenticated}
+            title={
+              isAuthenticated
+                ? 'Отметка нравится'
+                : 'Для отметки «Нравится» необходимо войти в систему'
+            }
           >
             <svg
               width="22"
