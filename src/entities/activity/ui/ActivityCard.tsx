@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { NetworkActivityResponse } from '../../../shared/api/generated/Api';
 import { DEFAULT_IMAGE } from '../model/mock';
+import { resolveMediaUrl } from '../../../shared/lib/mediaUrl';
 import '../../../styles/entities/ActivityCard.css';
 
 interface ActivityCardProps {
@@ -11,9 +12,9 @@ interface ActivityCardProps {
 }
 
 export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick, onDelete }) => {
-  // Реализация fallback на изображение по умолчанию
+  // Реализация fallback на изображение по умолчанию + проксирование MinIO через /media
   const [imgSrc, setImgSrc] = useState<string>(
-    activity.preview_image_url || DEFAULT_IMAGE
+    resolveMediaUrl(activity.preview_image_url) || DEFAULT_IMAGE
   );
 
   const handleError = () => {

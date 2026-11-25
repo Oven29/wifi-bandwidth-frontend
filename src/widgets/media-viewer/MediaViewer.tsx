@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DEFAULT_IMAGE } from '../../entities/activity/model/mock';
+import { resolveMediaUrl } from '../../shared/lib/mediaUrl';
 import '../../styles/widgets/MediaViewer.css';
 
 interface MediaViewerProps {
@@ -19,19 +20,22 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   loop = true,
   className = '',
 }) => {
+  const resolvedVideoUrl = resolveMediaUrl(videoUrl);
+  const resolvedImageUrl = resolveMediaUrl(imageUrl) || DEFAULT_IMAGE;
+
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoFailed, setVideoFailed] = useState<boolean>(!videoUrl);
-  const [imgSrc, setImgSrc] = useState<string>(imageUrl || DEFAULT_IMAGE);
+  const [videoFailed, setVideoFailed] = useState<boolean>(!resolvedVideoUrl);
+  const [imgSrc, setImgSrc] = useState<string>(resolvedImageUrl);
 
   // Сброс состояния при смене источника
   useEffect(() => {
-    setVideoFailed(!videoUrl);
-    setImgSrc(imageUrl || DEFAULT_IMAGE);
-  }, [videoUrl, imageUrl]);
+    setVideoFailed(!resolvedVideoUrl);
+    setImgSrc(resolvedImageUrl);
+  }, [resolvedVideoUrl, resolvedImageUrl]);
 
   // Управление автовоспроизведением видео через useRef
   useEffect(() => {
-    if (!videoFailed && videoRef.current && videoUrl) {
+    if (!videoFailed && videoRef.current && resolvedVideoUrl) {
       videoRef.current.load();
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
@@ -40,7 +44,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         });
       }
     }
-  }, [videoUrl, videoFailed]);
+  }, [resolvedVideoUrl, videoFailed]);
 
   const handleVideoError = () => {
     setVideoFailed(true);
@@ -60,10 +64,10 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         <span className="media-viewer-fallback-badge">По умолчанию</span>
       )}
 
-      {!videoFailed && videoUrl ? (
+      {!videoFailed && resolvedVideoUrl ? (
         <video
           ref={videoRef}
-          src={videoUrl}
+          src={resolvedVideoUrl}
           className="media-viewer-video"
           autoPlay={autoPlay}
           loop={loop}
