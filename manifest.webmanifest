@@ -1,0 +1,24 @@
+{
+  "name": "Wi-Fi Bandwidth Router — Сетевые активности",
+  "short_name": "WiFi Router",
+  "description": "Определение необходимой пропускной способности Wi-Fi роутера",
+  "start_url": "/wifi-bandwidth-frontend/",
+  "scope": "/wifi-bandwidth-frontend/",
+  "display": "standalone",
+  "background_color": "#141526",
+  "theme_color": "#00F3BB",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "pwa-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
