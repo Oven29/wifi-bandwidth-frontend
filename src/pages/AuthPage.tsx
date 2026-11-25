@@ -14,44 +14,19 @@ export const AuthPage: React.FC = () => {
     (state) => state.auth
   );
 
-  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Валидация перед отправкой
   const validateForm = (): string | null => {
     const trimmedUser = username.trim();
     if (!trimmedUser) {
       return 'Пожалуйста, укажите имя пользователя';
     }
-    if (trimmedUser.length < 3) {
-      return 'Логин должен содержать не менее 3 символов';
-    }
-    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUser)) {
-      return 'Логин может содержать только латинские буквы, цифры, дефис и подчеркивание';
-    }
-
     if (!password) {
       return 'Пожалуйста, введите пароль';
     }
-    if (password.length < 6) {
-      return 'Пароль должен содержать не менее 6 символов';
-    }
-
-    if (mode === 'register') {
-      if (!confirmPassword) {
-        return 'Пожалуйста, повторите пароль';
-      }
-      if (password !== confirmPassword) {
-        return 'Введенные пароли не совпадают';
-      }
-    }
-
     return null;
   };
 
@@ -70,29 +45,14 @@ export const AuthPage: React.FC = () => {
 
     try {
       dispatch(setAuthLoading(true));
-
-      if (mode === 'register') {
-        // Регистрация нового пользователя через Axios (Лекция 10-11)
-        await authApi.register(trimmedUser, password);
-        // Сразу производим авторизацию созданного пользователя
-        await authApi.login(trimmedUser, password);
-      } else {
-        // Авторизация пользователя через Axios
-        await authApi.login(trimmedUser, password);
-      }
-
-      // Вручную передаем состояние в Redux
+      await authApi.login(trimmedUser, password);
       dispatch(loginSuccess({ username: trimmedUser }));
       navigate(ROUTES.CATALOG);
     } catch (err: any) {
       const detail = err.response?.data?.detail;
       let msg = 'Произошла ошибка при выполнении запроса';
       if (typeof detail === 'string') {
-        if (detail.includes('already registered')) {
-          msg = 'Пользователь с таким логином уже зарегистрирован';
-        } else {
-          msg = detail;
-        }
+        msg = detail;
       } else if (err.response?.status === 401) {
         msg = 'Неверный логин или пароль';
       }
@@ -111,12 +71,6 @@ export const AuthPage: React.FC = () => {
     } finally {
       dispatch(setAuthLoading(false));
     }
-  };
-
-  const handleModeSwitch = (newMode: 'login' | 'register') => {
-    setMode(newMode);
-    setValidationError(null);
-    dispatch(setAuthError(null));
   };
 
   return (
@@ -139,39 +93,14 @@ export const AuthPage: React.FC = () => {
             </svg>
           </div>
           <h1 className="auth-title">
-            {isAuthenticated
-              ? 'Вы авторизованы'
-              : mode === 'login'
-              ? 'Вход в систему'
-              : 'Регистрация аккаунта'}
+            {isAuthenticated ? 'Вы авторизованы' : 'Вход в систему'}
           </h1>
           <p className="auth-subtitle">
             {isAuthenticated
               ? `Текущий пользователь: @${currentUsername}`
-              : mode === 'login'
-              ? 'Авторизуйтесь для управления активностями роутера'
-              : 'Создайте аккаунт для добавления своих услуг'}
+              : 'Авторизуйтесь для управления активностями роутера'}
           </p>
         </div>
-
-        {!isAuthenticated && (
-          <div className="auth-tabs mb-4">
-            <button
-              type="button"
-              className={`auth-tab-btn ${mode === 'login' ? 'active' : ''}`}
-              onClick={() => handleModeSwitch('login')}
-            >
-              Вход
-            </button>
-            <button
-              type="button"
-              className={`auth-tab-btn ${mode === 'register' ? 'active' : ''}`}
-              onClick={() => handleModeSwitch('register')}
-            >
-              Регистрация
-            </button>
-          </div>
-        )}
 
         {(validationError || error) && (
           <Alert variant="danger" className="auth-alert py-2 text-center">
@@ -214,14 +143,9 @@ export const AuthPage: React.FC = () => {
                 autoComplete="username"
                 disabled={loading}
               />
-              {mode === 'register' && (
-                <div className="auth-validation-hint">
-                  Минимум 3 символа (латиница, цифры, дефис, подчеркивание)
-                </div>
-              )}
             </Form.Group>
 
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-4">
               <Form.Label className="auth-label">Пароль</Form.Label>
               <div className="auth-password-wrapper">
                 <Form.Control
@@ -230,7 +154,7 @@ export const AuthPage: React.FC = () => {
                   placeholder="Введите пароль"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                  autoComplete="current-password"
                   disabled={loading}
                 />
                 <button
@@ -241,13 +165,11 @@ export const AuthPage: React.FC = () => {
                   tabIndex={-1}
                 >
                   {showPassword ? (
-                    // Иконка перечеркнутого глаза (скрыть)
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   ) : (
-                    // Иконка открытого глаза (показать)
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
@@ -255,61 +177,14 @@ export const AuthPage: React.FC = () => {
                   )}
                 </button>
               </div>
-              {mode === 'register' && (
-                <div className="auth-validation-hint">
-                  Минимум 6 символов
-                </div>
-              )}
             </Form.Group>
-
-            {mode === 'register' && (
-              <Form.Group className="mb-4">
-                <Form.Label className="auth-label">Подтверждение пароля</Form.Label>
-                <div className="auth-password-wrapper">
-                  <Form.Control
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    className="custom-form-control auth-password-input"
-                    placeholder="Повторите пароль"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    autoComplete="new-password"
-                    disabled={loading}
-                  />
-                  <button
-                    type="button"
-                    className="auth-eye-btn"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    title={showConfirmPassword ? 'Скрыть пароль' : 'Показать пароль'}
-                    tabIndex={-1}
-                  >
-                    {showConfirmPassword ? (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                        <line x1="1" y1="1" x2="23" y2="23" />
-                      </svg>
-                    ) : (
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                        <circle cx="12" cy="12" r="3" />
-                      </svg>
-                    )}
-                  </button>
-                </div>
-              </Form.Group>
-            )}
 
             <Button
               type="submit"
               className="btn-auth-submit w-100 mb-3 py-2"
               disabled={loading}
             >
-              {loading
-                ? mode === 'login'
-                  ? 'Проверка...'
-                  : 'Регистрация...'
-                : mode === 'login'
-                ? 'Войти в аккаунт'
-                : 'Создать аккаунт'}
+              {loading ? 'Проверка...' : 'Войти в аккаунт'}
             </Button>
           </Form>
         )}

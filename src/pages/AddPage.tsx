@@ -260,7 +260,7 @@ export const AddPage: React.FC = () => {
               className="btn-add-submit w-100 py-2"
               disabled={loading}
             >
-              {loading ? 'Создание черновика...' : 'Создать черновик →'}
+              {loading ? 'Сохранение...' : 'Далее'}
             </Button>
           </Form>
         ) : (
@@ -340,24 +340,13 @@ export const AddPage: React.FC = () => {
               />
             </Form.Group>
 
-            {/* Одинаковые по размеру кнопки второго шага */}
-            <div className="add-step2-buttons">
-              <Button
-                type="submit"
-                className="btn-step2-action btn-step2-publish"
-                disabled={loading}
-              >
-                {loading ? 'Публикация...' : 'Опубликовать ✓'}
-              </Button>
-              <Button
-                type="button"
-                className="btn-step2-action btn-step2-cancel"
-                onClick={() => dispatch(clearDraft())}
-                disabled={loading}
-              >
-                Отменить черновик
-              </Button>
-            </div>
+            <Button
+              type="submit"
+              className="btn-add-submit w-100 py-2 mt-2"
+              disabled={loading}
+            >
+              {loading ? 'Публикация...' : 'Опубликовать'}
+            </Button>
           </Form>
         )}
       </div>
