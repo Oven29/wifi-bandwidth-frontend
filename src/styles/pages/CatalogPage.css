@@ -26,6 +26,36 @@
   margin-top: 16px;
 }
 
+/* Адаптивная сетка карточек для разных ширин экрана */
+@media (max-width: 460px) {
+  .catalog-page {
+    padding: 12px 12px 28px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .catalog-page {
+    padding: 24px 24px 40px;
+  }
+
+  .catalog-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1080px) {
+  .catalog-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
 .catalog-empty-state {
   background: var(--bg-surface);
   border: 1px dashed var(--border-color);

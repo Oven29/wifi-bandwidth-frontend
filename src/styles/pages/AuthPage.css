@@ -1,11 +1,22 @@
 .auth-page {
   padding: 24px 16px 36px;
   width: 100%;
+  max-width: 480px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: calc(100vh - var(--navbar-height));
+}
+
+@media (max-width: 460px) {
+  .auth-page {
+    padding: 16px 12px 28px;
+  }
+
+  .auth-card {
+    padding: 20px 14px;
+  }
 }
 
 .auth-card {

@@ -11,7 +11,7 @@ import { ROUTES } from './routes';
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="app-shell">
         <main className="app-content">
           <Routes>

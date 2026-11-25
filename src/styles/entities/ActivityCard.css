@@ -96,9 +96,20 @@
   gap: 4px;
 }
 
-.btn-card-delete {
+.btn-card-delete,
+.btn-card-detail {
   padding: 2px 8px !important;
   font-size: 11px !important;
   line-height: 1.2 !important;
   border-radius: 6px !important;
+}
+
+.btn-card-detail {
+  color: var(--accent) !important;
+  border-color: rgba(0, 243, 187, 0.4) !important;
+}
+
+.btn-card-detail:hover {
+  background-color: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
 }

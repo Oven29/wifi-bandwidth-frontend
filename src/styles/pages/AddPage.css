@@ -1,7 +1,18 @@
 .add-page {
   padding: 20px 16px 36px;
   width: 100%;
+  max-width: 560px;
   margin: 0 auto;
+}
+
+@media (max-width: 460px) {
+  .add-page {
+    padding: 14px 12px 28px;
+  }
+
+  .add-step2-buttons {
+    flex-direction: column;
+  }
 }
 
 .add-card {

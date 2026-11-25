@@ -7,10 +7,11 @@ import '../../../styles/entities/ActivityCard.css';
 interface ActivityCardProps {
   activity: NetworkActivityResponse;
   onClick: () => void;
+  onDetail?: () => void;
   onDelete?: () => void;
 }
 
-export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick, onDelete }) => {
+export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick, onDetail, onDelete }) => {
   // Реализация fallback на изображение по умолчанию
   const [imgSrc, setImgSrc] = useState<string>(
     activity.preview_image_url || DEFAULT_IMAGE
@@ -52,20 +53,36 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({ activity, onClick, o
           <div className="activity-card-speed">
             ⚡ {activity.average_traffic_mbps} Мбит/с
           </div>
-          {activity.is_owner === 1 && onDelete && (
-            <Button
-              variant="outline-danger"
-              size="sm"
-              className="btn-card-delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-              title="Удалить активность"
-            >
-              Удалить
-            </Button>
-          )}
+          <div className="d-flex align-items-center gap-1">
+            {onDetail && (
+              <Button
+                variant="outline-info"
+                size="sm"
+                className="btn-card-detail"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDetail();
+                }}
+                title="Подробнее об активности"
+              >
+                Подробнее
+              </Button>
+            )}
+            {activity.is_owner === 1 && onDelete && (
+              <Button
+                variant="outline-danger"
+                size="sm"
+                className="btn-card-delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                title="Удалить активность"
+              >
+                Удалить
+              </Button>
+            )}
+          </div>
         </div>
       </Card.Body>
     </Card>

@@ -11,3 +11,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+cert.key
+cert.crt
+ca.key
+ca.crt
+*.pem

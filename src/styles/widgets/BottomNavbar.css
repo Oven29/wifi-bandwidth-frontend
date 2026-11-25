@@ -4,7 +4,7 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   width: 100% !important;
-  max-width: 390px !important;
+  max-width: 100% !important;
   height: var(--navbar-height);
   background-color: rgba(20, 21, 38, 0.95) !important;
   backdrop-filter: blur(12px);
@@ -12,6 +12,22 @@
   padding: 0;
   z-index: 1030;
   box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .bottom-navbar {
+    max-width: 720px !important;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-radius: 16px 16px 0 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .bottom-tab-item {
+    font-size: 10px;
+    padding: 6px 2px;
+  }
 }
 
 .bottom-tab-item {

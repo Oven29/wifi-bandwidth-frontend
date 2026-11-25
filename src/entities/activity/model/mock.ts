@@ -1,8 +1,8 @@
 import { NetworkActivityResponse } from '../../../shared/api/generated/Api';
 
-// Fallback assets
-export const DEFAULT_IMAGE = '/default.svg';
-export const DEFAULT_VIDEO = '/default.mp4';
+// Fallback assets (с учетом base URL для GitHub Pages)
+export const DEFAULT_IMAGE = `${import.meta.env.BASE_URL}default.svg`;
+export const DEFAULT_VIDEO = `${import.meta.env.BASE_URL}default.mp4`;
 
 export const MOCK_ACTIVITIES: NetworkActivityResponse[] = [
   {

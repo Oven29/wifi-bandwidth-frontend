@@ -44,19 +44,25 @@ html, body {
   background-color: #07080b;
 }
 
-/* Вертикальный мобильный экран формата TikTok / Смартфон (по центру) */
+/* Адаптивный контейнер приложения (mobile-first, расширяется на планшетах и десктопах) */
 .app-shell {
   width: 100%;
-  max-width: 390px;
+  max-width: 100%;
   min-height: 100vh;
   background-color: var(--bg-primary);
   position: relative;
   display: flex;
   flex-direction: column;
   padding-bottom: var(--navbar-height);
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.06);
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    max-width: 1200px;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
 }
 
 .app-content {

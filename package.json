@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
     "preview": "vite preview",
+    "deploy": "gh-pages -d dist",
     "codegen": "npx --yes swagger-typescript-api generate -p swagger.json -o ./src/shared/api/generated -n Api.ts --axios"
   },
   "dependencies": {
@@ -20,11 +22,15 @@
     "react-router-dom": "^7.18.5"
   },
   "devDependencies": {
+    "@types/node": "^26.6.7",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "gh-pages": "^6.3.0",
     "typescript": "^5.2.2",
-    "vite": "^6.4.6"
+    "vite": "^6.4.6",
+    "vite-plugin-mkcert": "^2.1.0",
+    "vite-plugin-pwa": "^2.0.0"
   },
   "overrides": {
     "esbuild": "^0.25.0"

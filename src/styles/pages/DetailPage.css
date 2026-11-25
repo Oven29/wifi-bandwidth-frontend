@@ -1,7 +1,29 @@
 .detail-page {
   padding: 16px 16px 32px;
   width: 100%;
+  max-width: 960px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .detail-page {
+    padding: 24px 24px 40px;
+  }
+
+  .detail-media-card {
+    max-height: 460px;
+  }
+}
+
+@media (max-width: 460px) {
+  .detail-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .detail-info-card {
+    padding: 16px;
+  }
 }
 
 .detail-top-bar {

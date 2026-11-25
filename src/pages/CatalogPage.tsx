@@ -77,6 +77,7 @@ export const CatalogPage: React.FC = () => {
               key={activity.id}
               activity={activity}
               onClick={() => handleCardClick(activity.id)}
+              onDetail={() => navigate(`${ROUTES.DETAIL}/${activity.id}`)}
               onDelete={
                 activity.is_owner === 1
                   ? () => handleDeleteActivity(activity.id)
