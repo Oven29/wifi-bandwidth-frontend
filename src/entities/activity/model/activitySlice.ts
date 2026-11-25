@@ -6,6 +6,28 @@ import {
 } from '../../../shared/api/generated/Api';
 import { MOCK_ACTIVITIES } from './mock';
 
+const isGitHubPages =
+  typeof window !== 'undefined' && window.location.hostname.endsWith('github.io');
+
+function getMockActivities(filterTraffic?: number): NetworkActivityResponse[] {
+  return MOCK_ACTIVITIES.filter((item) => {
+    const traffic = item.average_traffic_mbps ?? 0;
+    return filterTraffic === undefined || traffic <= filterTraffic;
+  });
+}
+
+function getMockFeedItem(query?: { activity_id?: number; current_id?: number }): NetworkActivityResponse | null {
+  if (query?.activity_id !== undefined) {
+    return MOCK_ACTIVITIES.find((item) => item.id === query.activity_id) || MOCK_ACTIVITIES[0] || null;
+  }
+  if (query?.current_id !== undefined) {
+    const curIdx = MOCK_ACTIVITIES.findIndex((item) => item.id === query.current_id);
+    const nextIdx = curIdx !== -1 ? (curIdx + 1) % MOCK_ACTIVITIES.length : 0;
+    return MOCK_ACTIVITIES[nextIdx] || null;
+  }
+  return MOCK_ACTIVITIES[0] || null;
+}
+
 export interface ActivityState {
   activities: NetworkActivityResponse[];
   feedActivity: NetworkActivityResponse | null;
@@ -27,6 +49,9 @@ export const fetchActivitiesThunk = createAsyncThunk<
   NetworkActivityResponse[],
   number | undefined
 >('networkActivities/fetchActivities', async (filterTraffic) => {
+  if (isGitHubPages) {
+    return getMockActivities(filterTraffic);
+  }
   try {
     const response = await networkActivitiesApi.listActivities(
       filterTraffic !== undefined ? { filter_traffic: filterTraffic } : undefined
@@ -37,11 +62,7 @@ export const fetchActivitiesThunk = createAsyncThunk<
     return response.data;
   } catch {
     // Fallback на mock-коллекцию при отсутствии доступа к бэкенду (только как гость)
-    const filtered = MOCK_ACTIVITIES.filter((item) => {
-      const traffic = item.average_traffic_mbps ?? 0;
-      return filterTraffic === undefined || traffic <= filterTraffic;
-    });
-    return filtered;
+    return getMockActivities(filterTraffic);
   }
 });
 
@@ -55,21 +76,15 @@ export const fetchFeedThunk = createAsyncThunk<
       ? { activity_id: arg }
       : arg;
 
+  if (isGitHubPages) {
+    return getMockFeedItem(query);
+  }
   try {
     const response = await networkActivitiesApi.getFeed(query);
     return response.data.activity || null;
   } catch {
     // Fallback на mock-коллекцию при отсутствии доступа к бэкенду (только как гость)
-    if (query?.activity_id !== undefined) {
-      const found = MOCK_ACTIVITIES.find((item) => item.id === query.activity_id);
-      return found || MOCK_ACTIVITIES[0] || null;
-    }
-    if (query?.current_id !== undefined) {
-      const curIdx = MOCK_ACTIVITIES.findIndex((item) => item.id === query.current_id);
-      const nextIdx = curIdx !== -1 ? (curIdx + 1) % MOCK_ACTIVITIES.length : 0;
-      return MOCK_ACTIVITIES[nextIdx] || null;
-    }
-    return MOCK_ACTIVITIES[0] || null;
+    return getMockFeedItem(query);
   }
 });
 
