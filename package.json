@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:pages": "tsc && vite build --mode pages",
     "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
+    "postbuild:pages": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist",
+    "deploy": "npm run build:pages && gh-pages -d dist",
     "codegen": "npx --yes swagger-typescript-api generate -p swagger.json -o ./src/shared/api/generated -n Api.ts --axios"
   },
   "dependencies": {

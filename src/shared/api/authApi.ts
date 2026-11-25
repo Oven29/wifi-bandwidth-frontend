@@ -66,14 +66,19 @@ export const authApi = {
    * Очищает Redis-сессию на бэкенде, cookie и localStorage.
    */
   async logout(): Promise<void> {
+    const isMockMode =
+      import.meta.env.VITE_USE_MOCKS === 'true' ||
+      (typeof window !== 'undefined' && window.location.hostname.endsWith('github.io'));
     try {
-      await axios.post(
-        '/api/users/logout',
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+      if (!isMockMode) {
+        await axios.post(
+          '/api/users/logout',
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+      }
     } catch {
       // Игнорируем сетевые ошибки при выходе, чтобы гарантированно сбросить локальное состояние
     } finally {

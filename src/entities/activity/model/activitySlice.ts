@@ -6,8 +6,9 @@ import {
 } from '../../../shared/api/generated/Api';
 import { MOCK_ACTIVITIES } from './mock';
 
-const isGitHubPages =
-  typeof window !== 'undefined' && window.location.hostname.endsWith('github.io');
+const USE_MOCKS =
+  import.meta.env.VITE_USE_MOCKS === 'true' ||
+  (typeof window !== 'undefined' && window.location.hostname.endsWith('github.io'));
 
 function getMockActivities(filterTraffic?: number): NetworkActivityResponse[] {
   return MOCK_ACTIVITIES.filter((item) => {
@@ -49,7 +50,7 @@ export const fetchActivitiesThunk = createAsyncThunk<
   NetworkActivityResponse[],
   number | undefined
 >('networkActivities/fetchActivities', async (filterTraffic) => {
-  if (isGitHubPages) {
+  if (USE_MOCKS) {
     return getMockActivities(filterTraffic);
   }
   try {
@@ -76,7 +77,7 @@ export const fetchFeedThunk = createAsyncThunk<
       ? { activity_id: arg }
       : arg;
 
-  if (isGitHubPages) {
+  if (USE_MOCKS) {
     return getMockFeedItem(query);
   }
   try {
@@ -92,6 +93,9 @@ export const fetchFeedThunk = createAsyncThunk<
 export const fetchDraftThunk = createAsyncThunk<NetworkActivityResponse | null>(
   'networkActivities/fetchDraft',
   async () => {
+    if (USE_MOCKS) {
+      return null;
+    }
     try {
       const response = await networkActivitiesApi.getDraft();
       return response.data;
@@ -135,6 +139,9 @@ export const publishActivityThunk = createAsyncThunk<
 export const deleteActivityThunk = createAsyncThunk<number, number>(
   'networkActivities/deleteActivity',
   async (id, { rejectWithValue }) => {
+    if (USE_MOCKS) {
+      return id;
+    }
     try {
       await networkActivitiesApi.deleteActivity(id);
       return id;
@@ -149,6 +156,9 @@ export const toggleLikeThunk = createAsyncThunk<
   { id: number; status: number },
   number
 >('networkActivities/toggleLike', async (id, { rejectWithValue }) => {
+  if (USE_MOCKS) {
+    return { id, status: 1 };
+  }
   try {
     const response = await networkActivitiesApi.toggleLike(id);
     return { id, status: response.data.status ?? 0 };
